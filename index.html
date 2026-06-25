@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,7 +102,7 @@ tr:hover td{background:var(--surface2)}
 <div class="topbar">
   <div>
     <div class="topbar-title">SDD Migration Cost Dashboard</div>
-    <div class="topbar-sub">Oracle → PostgreSQL · claude-haiku-4-5 · 125 files (POC)</div>
+    <div class="topbar-sub">Oracle → PostgreSQL · claude-haiku-4-5 · 125 files</div>
   </div>
   <span class="badge badge-amber">Early-stage data</span>
 </div>
@@ -109,7 +110,7 @@ tr:hover td{background:var(--surface2)}
 <div class="main">
 
   <div class="disclaimer">
-    ⚠️ Based on 125 Oracle .sql files from the proof-of-concept phase. Estimates will stabilise as the dataset grows toward the 90% pre-sale confidence target.
+    ⚠️ Based on 125 Oracle .sql files. Estimates will stabilise as the dataset grows toward the 90% pre-sale confidence target.
   </div>
 
   <!-- KPI row -->
@@ -128,7 +129,8 @@ tr:hover td{background:var(--surface2)}
     <div class="tab active" onclick="switchTab('agents')">Agents</div>
     <div class="tab" onclick="switchTab('sql')">SQL categories</div>
     <div class="tab" onclick="switchTab('objects')">Object types</div>
-    <div class="tab" onclick="switchTab('retries')">Retries</div>
+    <div class="tab" onclick="switchTab('retries')">Retries by SQL</div>
+    <div class="tab" onclick="switchTab('objretries')">Retries by object</div>
     <div class="tab" onclick="switchTab('runs')">Run performance</div>
   </div>
 
@@ -291,6 +293,70 @@ tr:hover td{background:var(--surface2)}
             <tr><td>DDL</td><td class="num">80</td><td class="num">33</td><td class="num">21</td><td class="num">6</td><td class="num"><span class="badge badge-amber">12</span></td><td class="num">2.14</td></tr>
             <tr><td>unknown</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num"><span class="badge badge-green">0</span></td><td class="num">1.33</td></tr>
           </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ OBJECT RETRIES TAB ═══ -->
+  <div class="tab-panel" id="tab-objretries">
+    <div class="card">
+      <div class="card-title">
+        <span class="card-title-text">Pass distribution by object type</span>
+        <div class="filter-row">
+          <label>Sort by</label>
+          <select class="flt" id="objRetrySort" onchange="renderObjRetryChart()">
+            <option value="avg">Avg retries (desc)</option>
+            <option value="escalated">Escalated (desc)</option>
+            <option value="total">Total files (desc)</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+          <label>Show top</label>
+          <select class="flt" id="objRetryTop" onchange="renderObjRetryChart()">
+            <option value="15">15</option>
+            <option value="25">25</option>
+            <option value="46">All 46</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-wrap" id="objRetryChartWrap" style="height:500px">
+        <canvas id="objRetryStackedChart" aria-label="Stacked bar chart of retry pass distribution per object type"></canvas>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><span class="card-title-text">Avg retries per file — top 15</span></div>
+        <div class="chart-wrap" style="height:380px">
+          <canvas id="objRetryAvgChart" aria-label="Horizontal bar chart of average retries per object type"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-title-text">Escalation rate — top 15</span></div>
+        <div class="chart-wrap" style="height:380px">
+          <canvas id="objEscalatedChart" aria-label="Horizontal bar chart of escalation count per object type"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <span class="card-title-text">Full retry statistics by object type</span>
+        <div class="filter-row">
+          <label>Search</label>
+          <input type="text" id="objRetrySearch" class="flt" placeholder="filter…" style="width:140px;padding:0 8px" oninput="filterObjRetryTable()">
+        </div>
+      </div>
+      <div class="tbl-wrap" style="max-height:440px;overflow-y:auto">
+        <table id="objRetryTable">
+          <thead><tr>
+            <th onclick="sortTable('objRetryTable',0)">Object type</th>
+            <th onclick="sortTable('objRetryTable',1)" class="num">Total files</th>
+            <th onclick="sortTable('objRetryTable',2)" class="num">Passed 1st</th>
+            <th onclick="sortTable('objRetryTable',3)" class="num">Passed 2nd</th>
+            <th onclick="sortTable('objRetryTable',4)" class="num">Passed 3rd</th>
+            <th onclick="sortTable('objRetryTable',5)" class="num">Escalated</th>
+            <th onclick="sortTable('objRetryTable',6)" class="num">Avg retries</th>
+          </tr></thead>
+          <tbody id="objRetryTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -621,10 +687,158 @@ new Chart(document.getElementById('runOutcomeChart'),{
   }
 });
 
+// ─── Object Retries ───────────────────────────────────────────────────────────
+const objRetryData = [
+  {name:'drop trigger',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'alter synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'savepoint',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'alter view',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'purge table',total:1,p1:0,p2:0,p3:0,escalated:0,avg:3},
+  {name:'create synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'purge recyclebin',total:1,p1:0,p2:0,p3:0,escalated:0,avg:3},
+  {name:'drop procedure',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'drop public',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'alter sequence',total:3,p1:1,p2:0,p3:0,escalated:1,avg:2.67},
+  {name:'drop view',total:3,p1:1,p2:0,p3:0,escalated:1,avg:2.67},
+  {name:'alter session',total:4,p1:0,p2:0,p3:2,escalated:1,avg:2.57},
+  {name:'drop index',total:5,p1:2,p2:0,p3:0,escalated:2,avg:2.57},
+  {name:'revoke',total:5,p1:0,p2:2,p3:0,escalated:2,avg:2.5},
+  {name:'drop table',total:17,p1:4,p2:4,p3:0,escalated:6,avg:2.42},
+  {name:'alter table',total:16,p1:3,p2:4,p3:1,escalated:6,avg:2.39},
+  {name:'create procedure',total:6,p1:2,p2:1,p3:0,escalated:2,avg:2.38},
+  {name:'create function',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
+  {name:'merge',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
+  {name:'delete',total:21,p1:7,p2:4,p3:0,escalated:8,avg:2.33},
+  {name:'drop function',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
+  {name:'update',total:18,p1:6,p2:4,p3:0,escalated:6,avg:2.26},
+  {name:'create sequence',total:20,p1:6,p2:5,p3:1,escalated:5,avg:2.2},
+  {name:'create table',total:35,p1:10,p2:9,p3:2,escalated:9,avg:2.2},
+  {name:'insert',total:32,p1:11,p2:7,p3:1,escalated:9,avg:2.2},
+  {name:'grant',total:12,p1:1,p2:4,p3:3,escalated:2,avg:2.18},
+  {name:'create user',total:4,p1:0,p2:1,p3:2,escalated:0,avg:2.17},
+  {name:'commit',total:29,p1:9,p2:8,p3:1,escalated:7,avg:2.14},
+  {name:'rollback',total:8,p1:4,p2:1,p3:0,escalated:1,avg:2.11},
+  {name:'select',total:81,p1:34,p2:14,p3:7,escalated:22,avg:2.04},
+  {name:'truncate table',total:3,p1:2,p2:0,p3:0,escalated:1,avg:2},
+  {name:'flashback table',total:3,p1:0,p2:2,p3:0,escalated:0,avg:2},
+  {name:'drop user',total:2,p1:0,p2:0,p3:2,escalated:0,avg:2},
+  {name:'create package',total:4,p1:0,p2:2,p3:1,escalated:0,avg:2},
+  {name:'execute',total:4,p1:0,p2:2,p3:1,escalated:1,avg:2},
+  {name:'drop sequence',total:9,p1:4,p2:2,p3:0,escalated:2,avg:2},
+  {name:'plsql block',total:23,p1:10,p2:5,p3:2,escalated:3,avg:1.88},
+  {name:'alter user',total:8,p1:1,p2:3,p3:3,escalated:0,avg:1.8},
+  {name:'create view',total:9,p1:5,p2:2,p3:0,escalated:1,avg:1.65},
+  {name:'create index',total:11,p1:7,p2:1,p3:1,escalated:1,avg:1.6},
+  {name:'create trigger',total:7,p1:4,p2:2,p3:0,escalated:1,avg:1.33},
+  {name:'unknown',total:3,p1:1,p2:1,p3:1,escalated:0,avg:1.33},
+  {name:'alter tablespace',total:2,p1:0,p2:2,p3:0,escalated:0,avg:1},
+  {name:'create role',total:1,p1:0,p2:1,p3:0,escalated:0,avg:1},
+  {name:'create tablespace',total:6,p1:4,p2:2,p3:0,escalated:0,avg:0.5},
+  {name:'rename',total:2,p1:2,p2:0,p3:0,escalated:0,avg:0},
+];
+
+let objRetryStackedInst=null, objRetryAvgInst=null, objEscalatedInst=null;
+
+function getSortedObjRetry(sortKey, top){
+  const d = [...objRetryData];
+  if(sortKey==='avg') d.sort((a,b)=>b.avg-a.avg);
+  else if(sortKey==='escalated') d.sort((a,b)=>b.escalated-a.escalated);
+  else if(sortKey==='total') d.sort((a,b)=>b.total-a.total);
+  else d.sort((a,b)=>a.name.localeCompare(b.name));
+  return d.slice(0,top);
+}
+
+function renderObjRetryChart(){
+  const sortKey = document.getElementById('objRetrySort').value;
+  const top = parseInt(document.getElementById('objRetryTop').value);
+  const d = getSortedObjRetry(sortKey, top);
+  const h = Math.max(400, d.length * 30 + 80);
+  document.getElementById('objRetryChartWrap').style.height = h+'px';
+  if(objRetryStackedInst) objRetryStackedInst.destroy();
+  objRetryStackedInst = new Chart(document.getElementById('objRetryStackedChart'),{
+    type:'bar',
+    data:{
+      labels:d.map(r=>r.name),
+      datasets:[
+        {label:'Passed 1st try',data:d.map(r=>r.p1),backgroundColor:'#2e7d52'},
+        {label:'Passed 2nd try',data:d.map(r=>r.p2),backgroundColor:'#c97a20'},
+        {label:'Passed 3rd try',data:d.map(r=>r.p3),backgroundColor:'#185FA5'},
+        {label:'Escalated',data:d.map(r=>r.escalated),backgroundColor:'#b93232'},
+      ]
+    },
+    options:{
+      ...chartDefaults,
+      indexAxis:'y',
+      scales:{x:{stacked:true},y:{stacked:true,ticks:{font:{size:11}}}},
+      plugins:{legend:{display:true,position:'top'}}
+    }
+  });
+}
+renderObjRetryChart();
+
+// Top 15 avg retries horizontal bar
+const top15avg = [...objRetryData].sort((a,b)=>b.avg-a.avg).slice(0,15);
+if(objRetryAvgInst) objRetryAvgInst.destroy();
+objRetryAvgInst = new Chart(document.getElementById('objRetryAvgChart'),{
+  type:'bar',
+  data:{
+    labels:top15avg.map(d=>d.name),
+    datasets:[{data:top15avg.map(d=>d.avg),backgroundColor:'#185FA5',borderWidth:0}]
+  },
+  options:{
+    ...chartDefaults,
+    indexAxis:'y',
+    scales:{x:{min:0,max:3,ticks:{stepSize:0.5}},y:{ticks:{font:{size:11}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Avg retries: ${c.raw}`}}}
+  }
+});
+
+// Top 15 escalated horizontal bar
+const top15esc = [...objRetryData].sort((a,b)=>b.escalated-a.escalated).slice(0,15);
+if(objEscalatedInst) objEscalatedInst.destroy();
+objEscalatedInst = new Chart(document.getElementById('objEscalatedChart'),{
+  type:'bar',
+  data:{
+    labels:top15esc.map(d=>d.name),
+    datasets:[{data:top15esc.map(d=>d.escalated),backgroundColor:'#b93232',borderWidth:0}]
+  },
+  options:{
+    ...chartDefaults,
+    indexAxis:'y',
+    scales:{y:{ticks:{font:{size:11}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Escalated: ${c.raw}`}}}
+  }
+});
+
+// Build object retry table
+function buildObjRetryTable(data){
+  document.getElementById('objRetryTableBody').innerHTML = data.map(d=>{
+    const esc = d.escalated > 0
+      ? `<span class="badge ${d.escalated>=5?'badge-red':d.escalated>=2?'badge-amber':'badge-blue'}">${d.escalated}</span>`
+      : `<span class="badge badge-green">0</span>`;
+    const avgColor = d.avg>=2.5?'#b93232':d.avg>=2?'#c97a20':'#2e7d52';
+    return `<tr>
+      <td>${d.name}</td>
+      <td class="num">${d.total}</td>
+      <td class="num">${d.p1}</td>
+      <td class="num">${d.p2}</td>
+      <td class="num">${d.p3}</td>
+      <td class="num">${esc}</td>
+      <td class="num" style="font-weight:500;color:${avgColor}">${d.avg.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+}
+buildObjRetryTable(objRetryData);
+
+function filterObjRetryTable(){
+  const q = document.getElementById('objRetrySearch').value.toLowerCase();
+  buildObjRetryTable(q ? objRetryData.filter(d=>d.name.includes(q)) : objRetryData);
+}
+
 // ─── Tabs ────────────────────────────────────────────────────────────────────
 function switchTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>{
-    const ids=['agents','sql','objects','retries','runs'];
+    const ids=['agents','sql','objects','retries','objretries','runs'];
     t.classList.toggle('active',ids[i]===name);
   });
   document.querySelectorAll('.tab-panel').forEach(p=>{
