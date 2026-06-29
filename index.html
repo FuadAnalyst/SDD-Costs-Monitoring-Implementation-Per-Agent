@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SDD Costs Estimation Dashboard</title>
+<title>SDD Migration Cost Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -101,8 +100,8 @@ tr:hover td{background:var(--surface2)}
 
 <div class="topbar">
   <div>
-    <div class="topbar-title">SDD Costs Estimation Dashboard</div>
-    <div class="topbar-sub">Oracle → PostgreSQL · claude-haiku-4-5 · 125 files</div>
+    <div class="topbar-title">SDD Migration Cost Dashboard</div>
+    <div class="topbar-sub">Oracle → PostgreSQL · claude-haiku-4-5 · 125 files (POC)</div>
   </div>
   <span class="badge badge-amber">Early-stage data</span>
 </div>
@@ -110,18 +109,18 @@ tr:hover td{background:var(--surface2)}
 <div class="main">
 
   <div class="disclaimer">
-    ⚠️ Based on 125 Oracle .sql files. Estimates will stabilise as the dataset grows toward the 90% pre-sale confidence target.
+    ⚠️ Based on 125 Oracle .sql files from the proof-of-concept phase. Estimates will stabilise as the dataset grows toward the 90% pre-sale confidence target.
   </div>
 
   <!-- KPI row -->
   <div class="section-title">Overall statistics</div>
   <div class="metric-grid">
-    <div class="metric"><div class="metric-label">Total files processed</div><div class="metric-value">125</div><div class="metric-sub">Across 4 completed runs</div></div>
-    <div class="metric"><div class="metric-label">Total cost</div><div class="metric-value">$10.26</div><div class="metric-sub">All runs · all agents</div></div>
-    <div class="metric"><div class="metric-label">Avg cost per file</div><div class="metric-value">$0.083</div><div class="metric-sub">±retries included</div></div>
-    <div class="metric"><div class="metric-label">Avg tokens per file</div><div class="metric-value">41,609</div><div class="metric-sub">Input + output</div></div>
-    <div class="metric"><div class="metric-label">Avg retries per file</div><div class="metric-value">1.15</div><div class="metric-sub">Max 3 before escalation</div></div>
-    <div class="metric"><div class="metric-label">Total token calls</div><div class="metric-value">5,159,464</div><div class="metric-sub">Input + output combined</div></div>
+    <div class="metric"><div class="metric-label">Total files processed</div><div class="metric-value">125</div><div class="metric-sub">Across 5 completed runs</div></div>
+    <div class="metric"><div class="metric-label">Total cost</div><div class="metric-value">$18.98</div><div class="metric-sub">All runs · all agents</div></div>
+    <div class="metric"><div class="metric-label">Avg cost per file</div><div class="metric-value">$0.156</div><div class="metric-sub">±retries included</div></div>
+    <div class="metric"><div class="metric-label">Avg tokens per file</div><div class="metric-value">79,533</div><div class="metric-sub">Input + output</div></div>
+    <div class="metric"><div class="metric-label">Avg retries per file</div><div class="metric-value">1.64</div><div class="metric-sub">Max 3 before escalation</div></div>
+    <div class="metric"><div class="metric-label">Total token calls</div><div class="metric-value">9,703,064</div><div class="metric-sub">Input + output combined</div></div>
   </div>
 
   <!-- Tabs -->
@@ -144,7 +143,7 @@ tr:hover td{background:var(--surface2)}
           <span class="legend-item"><span class="legend-dot" style="background:#2e7d52"></span>migration_agent</span>
           <span class="legend-item"><span class="legend-dot" style="background:#c97a20"></span>validation_agent</span>
         </div>
-        <div class="chart-wrap" style="height:220px"><canvas id="agentTokenDonut" aria-label="Token share donut chart by agent">sdd 32.55%, migration 31.7%, validation 35.76%</canvas></div>
+        <div class="chart-wrap" style="height:220px"><canvas id="agentTokenDonut" aria-label="Token share donut chart by agent">sdd 28.12%, migration 29.81%, validation 42.07%</canvas></div>
       </div>
       <div class="card">
         <div class="card-title"><span class="card-title-text">Cost share by agent</span></div>
@@ -153,7 +152,7 @@ tr:hover td{background:var(--surface2)}
           <span class="legend-item"><span class="legend-dot" style="background:#2e7d52"></span>migration_agent</span>
           <span class="legend-item"><span class="legend-dot" style="background:#c97a20"></span>validation_agent</span>
         </div>
-        <div class="chart-wrap" style="height:220px"><canvas id="agentCostDonut" aria-label="Cost share donut chart by agent">sdd 38.81%, migration 34.96%, validation 26.23%</canvas></div>
+        <div class="chart-wrap" style="height:220px"><canvas id="agentCostDonut" aria-label="Cost share donut chart by agent">sdd 32.31%, migration 21.16%, validation 46.53%</canvas></div>
       </div>
     </div>
     <div class="card">
@@ -168,9 +167,9 @@ tr:hover td{background:var(--surface2)}
             <th>Agent</th><th class="num">Input cost</th><th class="num">Output cost</th><th class="num">Total cost</th><th class="num">Avg cost/call</th><th class="num">% of total</th>
           </tr></thead>
           <tbody>
-            <tr><td>sdd_agent</td><td class="num">$1.104</td><td class="num">$2.878</td><td class="num">$3.982</td><td class="num">$0.003708</td><td class="num"><div class="bar-cell"><span>38.81%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td></tr>
-            <tr><td>migration_agent</td><td class="num">$1.147</td><td class="num">$2.440</td><td class="num">$3.588</td><td class="num">$0.003341</td><td class="num"><div class="bar-cell"><span>34.96%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:90%"></div></div></div></td></tr>
-            <tr><td>validation_agent</td><td class="num">$1.633</td><td class="num">$1.058</td><td class="num">$2.691</td><td class="num">$0.002506</td><td class="num"><div class="bar-cell"><span>26.23%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:68%"></div></div></div></td></tr>
+            <tr><td>sdd_agent</td><td class="num">$1.878</td><td class="num">$4.254</td><td class="num">$6.132</td><td class="num">$0.001552</td><td class="num"><div class="bar-cell"><span>32.31%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td></tr>
+            <tr><td>migration_agent</td><td class="num">$2.612</td><td class="num">$1.404</td><td class="num">$4.016</td><td class="num">$0.000997</td><td class="num"><div class="bar-cell"><span>21.16%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:45%"></div></div></div></td></tr>
+            <tr><td>validation_agent</td><td class="num">$2.894</td><td class="num">$5.939</td><td class="num">$8.833</td><td class="num">$0.001725</td><td class="num"><div class="bar-cell"><span>46.53%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -208,11 +207,10 @@ tr:hover td{background:var(--surface2)}
             <th onclick="sortTable('sqlTable',6)" class="num">% of total</th>
           </tr></thead>
           <tbody>
-            <tr><td>DML</td><td class="num">1179</td><td class="num">$2.345</td><td class="num">$3.865</td><td class="num">$6.210</td><td class="num">$0.005267</td><td class="num"><div class="bar-cell"><span>60.52%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td></tr>
-            <tr><td>DDL</td><td class="num">1593</td><td class="num">$1.348</td><td class="num">$2.180</td><td class="num">$3.528</td><td class="num">$0.002215</td><td class="num"><div class="bar-cell"><span>34.39%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:57%"></div></div></div></td></tr>
-            <tr><td>TCL</td><td class="num">282</td><td class="num">$0.099</td><td class="num">$0.152</td><td class="num">$0.251</td><td class="num">$0.000890</td><td class="num"><div class="bar-cell"><span>2.45%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:4%"></div></div></div></td></tr>
-            <tr><td>DCL</td><td class="num">150</td><td class="num">$0.061</td><td class="num">$0.105</td><td class="num">$0.166</td><td class="num">$0.001107</td><td class="num"><div class="bar-cell"><span>1.61%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:3%"></div></div></div></td></tr>
-            <tr><td>unknown</td><td class="num">18</td><td class="num">$0.031</td><td class="num">$0.074</td><td class="num">$0.106</td><td class="num">$0.005889</td><td class="num"><div class="bar-cell"><span>1.03%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:2%"></div></div></div></td></tr>
+            <tr><td>DML</td><td class="num">8,607</td><td class="num">$4.586</td><td class="num">$7.173</td><td class="num">$11.759</td><td class="num">$0.001366</td><td class="num"><div class="bar-cell"><span>61.95%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:100%"></div></div></div></td></tr>
+            <tr><td>DDL</td><td class="num">4,143</td><td class="num">$2.617</td><td class="num">$4.204</td><td class="num">$6.821</td><td class="num">$0.001646</td><td class="num"><div class="bar-cell"><span>35.94%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:58%"></div></div></div></td></tr>
+            <tr><td>DCL</td><td class="num">179</td><td class="num">$0.099</td><td class="num">$0.164</td><td class="num">$0.263</td><td class="num">$0.001469</td><td class="num"><div class="bar-cell"><span>1.39%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:2%"></div></div></div></td></tr>
+            <tr><td>TCL</td><td class="num">171</td><td class="num">$0.082</td><td class="num">$0.056</td><td class="num">$0.137</td><td class="num">$0.000799</td><td class="num"><div class="bar-cell"><span>0.72%</span><div class="mini-bar-bg"><div class="mini-bar" style="width:1%"></div></div></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -237,7 +235,7 @@ tr:hover td{background:var(--surface2)}
           <select class="flt" id="objTop" onchange="renderObjChart()">
             <option value="10">10</option>
             <option value="20">20</option>
-            <option value="46">All 46</option>
+            <option value="47">All 47</option>
           </select>
         </div>
       </div>
@@ -287,11 +285,10 @@ tr:hover td{background:var(--surface2)}
             <th>Category</th><th class="num">Total files</th><th class="num">Passed 1st</th><th class="num">Passed 2nd</th><th class="num">Passed 3rd</th><th class="num">Escalated</th><th class="num">Avg retries</th>
           </tr></thead>
           <tbody>
-            <tr><td>DCL</td><td class="num">12</td><td class="num">1</td><td class="num">4</td><td class="num">3</td><td class="num"><span class="badge badge-red">2</span></td><td class="num">2.28</td></tr>
-            <tr><td>TCL</td><td class="num">29</td><td class="num">9</td><td class="num">8</td><td class="num">1</td><td class="num"><span class="badge badge-red">7</span></td><td class="num">2.17</td></tr>
-            <tr><td>DML</td><td class="num">92</td><td class="num">40</td><td class="num">17</td><td class="num">8</td><td class="num"><span class="badge badge-red">22</span></td><td class="num">2.16</td></tr>
-            <tr><td>DDL</td><td class="num">80</td><td class="num">33</td><td class="num">21</td><td class="num">6</td><td class="num"><span class="badge badge-amber">12</span></td><td class="num">2.14</td></tr>
-            <tr><td>unknown</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num"><span class="badge badge-green">0</span></td><td class="num">1.33</td></tr>
+            <tr><td>DCL</td><td class="num">12</td><td class="num">1</td><td class="num">2</td><td class="num">2</td><td class="num"><span class="badge badge-red">6</span></td><td class="num">2.41</td></tr>
+            <tr><td>DDL</td><td class="num">80</td><td class="num">19</td><td class="num">19</td><td class="num">11</td><td class="num"><span class="badge badge-red">27</span></td><td class="num">2.39</td></tr>
+            <tr><td>DML</td><td class="num">91</td><td class="num">21</td><td class="num">20</td><td class="num">16</td><td class="num"><span class="badge badge-red">30</span></td><td class="num">2.22</td></tr>
+            <tr><td>TCL</td><td class="num">26</td><td class="num">4</td><td class="num">6</td><td class="num">3</td><td class="num"><span class="badge badge-red">11</span></td><td class="num">1.95</td></tr>
           </tbody>
         </table>
       </div>
@@ -392,32 +389,39 @@ tr:hover td{background:var(--surface2)}
           </tr></thead>
           <tbody>
             <tr>
-              <td style="font-family:monospace;font-size:11px">649b40eb…</td>
+              <td style="font-family:monospace;font-size:11px">fdfeec24…</td>
               <td>24 Jun 19:06</td>
               <td><span class="run-status badge badge-amber">NEEDS REVIEW</span></td>
-              <td class="num">25</td><td class="num">21</td><td class="num">4</td><td class="num">0</td>
-              <td class="num">1,236,598</td><td class="num">$2.449</td><td class="num">$0.098</td><td class="num">45.2 min</td>
+              <td class="num">25</td><td class="num">16</td><td class="num">9</td><td class="num">0</td>
+              <td class="num">1,459,143</td><td class="num">$3.029</td><td class="num">$0.121</td><td class="num">33 min</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;font-size:11px">d73a9c5e…</td>
+              <td style="font-family:monospace;font-size:11px">a537a411…</td>
               <td>24 Jun 19:55</td>
               <td><span class="run-status badge badge-amber">NEEDS REVIEW</span></td>
-              <td class="num">25</td><td class="num">19</td><td class="num">6</td><td class="num">0</td>
-              <td class="num">1,453,544</td><td class="num">$2.877</td><td class="num">$0.115</td><td class="num">49.5 min</td>
+              <td class="num">25</td><td class="num">13</td><td class="num">12</td><td class="num">0</td>
+              <td class="num">1,706,050</td><td class="num">$3.561</td><td class="num">$0.142</td><td class="num">52 min</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;font-size:11px">b1943532…</td>
+              <td style="font-family:monospace;font-size:11px">90689925…</td>
               <td>24 Jun 20:50</td>
-              <td><span class="run-status badge badge-red">WITH ERRORS</span></td>
-              <td class="num">25</td><td class="num">19</td><td class="num">5</td><td class="num">1</td>
-              <td class="num">753,404</td><td class="num">$1.525</td><td class="num">$0.061</td><td class="num">28.4 min</td>
+              <td><span class="run-status badge badge-amber">NEEDS REVIEW</span></td>
+              <td class="num">25</td><td class="num">19</td><td class="num">6</td><td class="num">0</td>
+              <td class="num">863,543</td><td class="num">$1.807</td><td class="num">$0.072</td><td class="num">24 min</td>
             </tr>
             <tr>
-              <td style="font-family:monospace;font-size:11px">45bae05f…</td>
+              <td style="font-family:monospace;font-size:11px">cee20226…</td>
               <td>24 Jun 21:23</td>
               <td><span class="run-status badge badge-amber">NEEDS REVIEW</span></td>
-              <td class="num">25</td><td class="num">20</td><td class="num">5</td><td class="num">0</td>
-              <td class="num">978,424</td><td class="num">$1.942</td><td class="num">$0.078</td><td class="num">37.7 min</td>
+              <td class="num">25</td><td class="num">13</td><td class="num">12</td><td class="num">0</td>
+              <td class="num">3,188,222</td><td class="num">$6.548</td><td class="num">$0.262</td><td class="num">108 min</td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;font-size:11px">e1e68593…</td>
+              <td>24 Jun 22:31</td>
+              <td><span class="run-status badge badge-amber">NEEDS REVIEW</span></td>
+              <td class="num">25</td><td class="num">23</td><td class="num">2</td><td class="num">0</td>
+              <td class="num">2,486,106</td><td class="num">$4.036</td><td class="num">$0.161</td><td class="num">57 min</td>
             </tr>
           </tbody>
         </table>
@@ -426,16 +430,16 @@ tr:hover td{background:var(--surface2)}
     <div class="card">
       <div class="card-title"><span class="card-title-text">Average cost / token per file</span></div>
       <div class="metric-grid" style="margin-bottom:0">
-        <div class="metric"><div class="metric-label">Avg tokens/file</div><div class="metric-value">41,609</div></div>
-        <div class="metric"><div class="metric-label">Avg input tokens</div><div class="metric-value">31,323</div></div>
-        <div class="metric"><div class="metric-label">Avg output tokens</div><div class="metric-value">10,285</div></div>
-        <div class="metric"><div class="metric-label">sdd_agent tokens</div><div class="metric-value">13,543</div></div>
-        <div class="metric"><div class="metric-label">migration tokens</div><div class="metric-value">13,188</div></div>
-        <div class="metric"><div class="metric-label">validation tokens</div><div class="metric-value">14,878</div></div>
+        <div class="metric"><div class="metric-label">Avg tokens/file</div><div class="metric-value">79,533</div></div>
+        <div class="metric"><div class="metric-label">Avg input tokens</div><div class="metric-value">60,522</div></div>
+        <div class="metric"><div class="metric-label">Avg output tokens</div><div class="metric-value">19,011</div></div>
+        <div class="metric"><div class="metric-label">sdd_agent tokens</div><div class="metric-value">22,366</div></div>
+        <div class="metric"><div class="metric-label">migration tokens</div><div class="metric-value">23,710</div></div>
+        <div class="metric"><div class="metric-label">validation tokens</div><div class="metric-value">33,457</div></div>
         <div class="metric"><div class="metric-label">Avg cost/file</div><div class="metric-value">$0.083</div></div>
-        <div class="metric"><div class="metric-label">sdd_agent cost</div><div class="metric-value">$0.032</div></div>
-        <div class="metric"><div class="metric-label">migration cost</div><div class="metric-value">$0.029</div></div>
-        <div class="metric"><div class="metric-label">validation cost</div><div class="metric-value">$0.022</div></div>
+        <div class="metric"><div class="metric-label">sdd_agent cost</div><div class="metric-value">$0.050</div></div>
+        <div class="metric"><div class="metric-label">migration cost</div><div class="metric-value">$0.033</div></div>
+        <div class="metric"><div class="metric-label">validation cost</div><div class="metric-value">$0.072</div></div>
       </div>
     </div>
   </div>
@@ -447,75 +451,75 @@ tr:hover td{background:var(--surface2)}
 const AGENT_COLORS = ['#185FA5','#2e7d52','#c97a20'];
 
 const objData = [
-  {name:"select",calls:561,inputCost:1.720,outputCost:2.918,totalCost:4.639,avgCost:0.008269162,tokens:2304062,pct:45.21},
-  {name:"insert",calls:240,inputCost:0.480,outputCost:0.709,totalCost:1.189,avgCost:0.004954167,tokens:621377,pct:11.59},
-  {name:"plsql block",calls:150,inputCost:0.447,outputCost:0.718,totalCost:1.165,avgCost:0.007766667,tokens:590986,pct:11.36},
-  {name:"create table",calls:270,inputCost:0.235,outputCost:0.362,totalCost:0.597,avgCost:0.002211111,tokens:307483,pct:5.82},
-  {name:"create procedure",calls:48,inputCost:0.141,outputCost:0.225,totalCost:0.366,avgCost:0.007625,tokens:186327,pct:3.57},
-  {name:"drop table",calls:144,inputCost:0.095,outputCost:0.154,totalCost:0.248,avgCost:0.001722222,tokens:125311,pct:2.42},
-  {name:"commit",calls:216,inputCost:0.087,outputCost:0.134,totalCost:0.220,avgCost:0.001018519,tokens:113444,pct:2.15},
-  {name:"alter table",calls:138,inputCost:0.069,outputCost:0.109,totalCost:0.178,avgCost:0.001289855,tokens:90414,pct:1.73},
-  {name:"delete",calls:165,inputCost:0.065,outputCost:0.108,totalCost:0.173,avgCost:0.001048485,tokens:86428,pct:1.68},
-  {name:"create sequence",calls:153,inputCost:0.057,outputCost:0.093,totalCost:0.150,avgCost:0.000980392,tokens:75669,pct:1.46},
-  {name:"grant",calls:102,inputCost:0.049,outputCost:0.085,totalCost:0.134,avgCost:0.001313725,tokens:65935,pct:1.28},
-  {name:"alter user",calls:60,inputCost:0.046,outputCost:0.068,totalCost:0.115,avgCost:0.001916667,tokens:60126,pct:1.12},
-  {name:"unknown",calls:18,inputCost:0.031,outputCost:0.074,totalCost:0.106,avgCost:0.005888889,tokens:46385,pct:1.03},
-  {name:"execute",calls:33,inputCost:0.040,outputCost:0.060,totalCost:0.100,avgCost:0.003030303,tokens:52097,pct:0.98},
-  {name:"update",calls:138,inputCost:0.036,outputCost:0.063,totalCost:0.099,avgCost:0.000717391,tokens:48878,pct:0.97},
-  {name:"create trigger",calls:36,inputCost:0.029,outputCost:0.057,totalCost:0.086,avgCost:0.002388889,tokens:40517,pct:0.79},
-  {name:"create index",calls:60,inputCost:0.031,outputCost:0.050,totalCost:0.081,avgCost:0.001350,tokens:40628,pct:0.79},
-  {name:"create tablespace",calls:24,inputCost:0.031,outputCost:0.051,totalCost:0.081,avgCost:0.003375,tokens:40857,pct:0.79},
-  {name:"create view",calls:51,inputCost:0.024,outputCost:0.041,totalCost:0.066,avgCost:0.001294118,tokens:32552,pct:0.64},
-  {name:"drop sequence",calls:60,inputCost:0.024,outputCost:0.042,totalCost:0.065,avgCost:0.001083333,tokens:31959,pct:0.64},
-  {name:"alter session",calls:42,inputCost:0.021,outputCost:0.038,totalCost:0.059,avgCost:0.001404762,tokens:28336,pct:0.55},
-  {name:"create user",calls:36,inputCost:0.016,outputCost:0.028,totalCost:0.044,avgCost:0.001222222,tokens:21200,pct:0.41},
-  {name:"alter tablespace",calls:12,inputCost:0.014,outputCost:0.021,totalCost:0.035,avgCost:0.002916667,tokens:17745,pct:0.34},
-  {name:"create function",calls:18,inputCost:0.013,outputCost:0.019,totalCost:0.032,avgCost:0.001777778,tokens:16516,pct:0.31},
-  {name:"revoke",calls:48,inputCost:0.012,outputCost:0.020,totalCost:0.032,avgCost:0.000666667,tokens:15804,pct:0.31},
-  {name:"rollback",calls:54,inputCost:0.010,outputCost:0.016,totalCost:0.026,avgCost:0.000481481,tokens:13295,pct:0.26},
-  {name:"drop procedure",calls:12,inputCost:0.009,outputCost:0.017,totalCost:0.025,avgCost:0.002083333,tokens:11918,pct:0.25},
-  {name:"drop trigger",calls:12,inputCost:0.009,outputCost:0.017,totalCost:0.025,avgCost:0.002083333,tokens:11923,pct:0.23},
-  {name:"drop user",calls:18,inputCost:0.007,outputCost:0.013,totalCost:0.021,avgCost:0.001166667,tokens:10114,pct:0.20},
-  {name:"flashback table",calls:24,inputCost:0.006,outputCost:0.013,totalCost:0.020,avgCost:0.000833333,tokens:9105,pct:0.18},
-  {name:"create package",calls:33,inputCost:0.007,outputCost:0.010,totalCost:0.017,avgCost:0.000515152,tokens:9044,pct:0.17},
-  {name:"purge table",calls:12,inputCost:0.004,outputCost:0.008,totalCost:0.012,avgCost:0.001000,tokens:5389,pct:0.11},
-  {name:"drop index",calls:42,inputCost:0.003,outputCost:0.006,totalCost:0.009,avgCost:0.000214286,tokens:4670,pct:0.09},
-  {name:"merge",calls:18,inputCost:0.003,outputCost:0.005,totalCost:0.007,avgCost:0.000388889,tokens:3520,pct:0.07},
-  {name:"drop function",calls:18,inputCost:0.002,outputCost:0.004,totalCost:0.006,avgCost:0.000333333,tokens:2960,pct:0.06},
-  {name:"purge recyclebin",calls:12,inputCost:0.002,outputCost:0.004,totalCost:0.006,avgCost:0.000500,tokens:2698,pct:0.06},
-  {name:"savepoint",calls:12,inputCost:0.002,outputCost:0.003,totalCost:0.005,avgCost:0.000416667,tokens:2390,pct:0.05},
-  {name:"alter sequence",calls:27,inputCost:0.001,outputCost:0.002,totalCost:0.004,avgCost:0.000148148,tokens:1932,pct:0.04},
-  {name:"drop view",calls:27,inputCost:0.001,outputCost:0.002,totalCost:0.004,avgCost:0.000148148,tokens:1935,pct:0.04},
-  {name:"truncate table",calls:18,inputCost:0.001,outputCost:0.003,totalCost:0.004,avgCost:0.000222222,tokens:1982,pct:0.04},
-  {name:"create synonym",calls:12,inputCost:0.001,outputCost:0.002,totalCost:0.003,avgCost:0.000250,tokens:1484,pct:0.03},
-  {name:"create role",calls:6,inputCost:0.001,outputCost:0.002,totalCost:0.003,avgCost:0.000500,tokens:1379,pct:0.03},
-  {name:"drop public",calls:12,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.000166667,tokens:743,pct:0.01},
-  {name:"alter synonym",calls:12,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.000166667,tokens:742,pct:0.01},
-  {name:"alter view",calls:12,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.000166667,tokens:745,pct:0.01},
-  {name:"rename",calls:6,inputCost:0,outputCost:0.001,totalCost:0.001,avgCost:0.000166667,tokens:460,pct:0.01},
-];
+  {name:"select",calls:4665,inputCost:2.466,outputCost:4.031,totalCost:6.497,avgCost:0.001393,tokens:3272200,pct:34.23},
+  {name:"insert",calls:3414,inputCost:1.840,outputCost:2.741,totalCost:4.581,avgCost:0.001342,tokens:2388200,pct:24.14},
+  {name:"plsql block",calls:623,inputCost:0.532,outputCost:0.806,totalCost:1.338,avgCost:0.002148,tokens:693200,pct:7.05},
+  {name:"create table",calls:994,inputCost:0.601,outputCost:0.921,totalCost:1.523,avgCost:0.001532,tokens:785200,pct:8.02},
+  {name:"create procedure",calls:303,inputCost:0.330,outputCost:0.566,totalCost:0.896,avgCost:0.002958,tokens:443200,pct:4.72},
+  {name:"drop table",calls:469,inputCost:0.218,outputCost:0.328,totalCost:0.545,avgCost:0.001161,tokens:283600,pct:2.87},
+  {name:"alter table",calls:374,inputCost:0.180,outputCost:0.291,totalCost:0.471,avgCost:0.001261,tokens:238200,pct:2.48},
+  {name:"create sequence",calls:232,inputCost:0.129,outputCost:0.206,totalCost:0.335,avgCost:0.001444,tokens:170200,pct:1.77},
+  {name:"update",calls:200,inputCost:0.101,outputCost:0.136,totalCost:0.238,avgCost:0.001189,tokens:128200,pct:1.25},
+  {name:"grant",calls:160,inputCost:0.091,outputCost:0.151,totalCost:0.242,avgCost:0.001510,tokens:121200,pct:1.27},
+  {name:"delete",calls:207,inputCost:0.090,outputCost:0.137,totalCost:0.227,avgCost:0.001097,tokens:117400,pct:1.20},
+  {name:"alter user",calls:150,inputCost:0.082,outputCost:0.153,totalCost:0.235,avgCost:0.001566,tokens:112600,pct:1.24},
+  {name:"create index",calls:150,inputCost:0.075,outputCost:0.120,totalCost:0.195,avgCost:0.001300,tokens:99000,pct:1.03},
+  {name:"execute",calls:97,inputCost:0.070,outputCost:0.090,totalCost:0.160,avgCost:0.001652,tokens:88000,pct:0.84},
+  {name:"create tablespace",calls:108,inputCost:0.057,outputCost:0.105,totalCost:0.162,avgCost:0.001501,tokens:78000,pct:0.85},
+  {name:"create view",calls:126,inputCost:0.061,outputCost:0.084,totalCost:0.145,avgCost:0.001147,tokens:77800,pct:0.76},
+  {name:"commit",calls:124,inputCost:0.061,outputCost:0.035,totalCost:0.096,avgCost:0.000773,tokens:68000,pct:0.51},
+  {name:"unknown",calls:75,inputCost:0.041,outputCost:0.085,totalCost:0.126,avgCost:0.001680,tokens:58000,pct:0.66},
+  {name:"flashback table",calls:50,inputCost:0.034,outputCost:0.076,totalCost:0.109,avgCost:0.002185,tokens:49200,pct:0.58},
+  {name:"create function",calls:49,inputCost:0.036,outputCost:0.059,totalCost:0.095,avgCost:0.001941,tokens:47800,pct:0.50},
+  {name:"alter tablespace",calls:57,inputCost:0.034,outputCost:0.071,totalCost:0.105,avgCost:0.001837,tokens:48200,pct:0.55},
+  {name:"drop sequence",calls:71,inputCost:0.034,outputCost:0.052,totalCost:0.086,avgCost:0.001207,tokens:44400,pct:0.45},
+  {name:"create trigger",calls:39,inputCost:0.027,outputCost:0.045,totalCost:0.073,avgCost:0.001862,tokens:36000,pct:0.38},
+  {name:"create package",calls:40,inputCost:0.028,outputCost:0.050,totalCost:0.078,avgCost:0.001942,tokens:38000,pct:0.41},
+  {name:"create user",calls:46,inputCost:0.031,outputCost:0.038,totalCost:0.068,avgCost:0.001488,tokens:38600,pct:0.36},
+  {name:"merge",calls:24,inputCost:0.018,outputCost:0.038,totalCost:0.056,avgCost:0.002340,tokens:25600,pct:0.30},
+  {name:"alter session",calls:16,inputCost:0.015,outputCost:0.017,totalCost:0.032,avgCost:0.002010,tokens:18400,pct:0.17},
+  {name:"rollback",calls:36,inputCost:0.016,outputCost:0.015,totalCost:0.031,avgCost:0.000869,tokens:19000,pct:0.16},
+  {name:"drop trigger",calls:24,inputCost:0.010,outputCost:0.019,totalCost:0.029,avgCost:0.001215,tokens:13800,pct:0.15},
+  {name:"alter view",calls:18,inputCost:0.009,outputCost:0.019,totalCost:0.029,avgCost:0.001583,tokens:12800,pct:0.15},
+  {name:"create synonym",calls:12,inputCost:0.005,outputCost:0.010,totalCost:0.015,avgCost:0.001270,tokens:7000,pct:0.08},
+  {name:"alter sequence",calls:12,inputCost:0.006,outputCost:0.008,totalCost:0.015,avgCost:0.001234,tokens:7600,pct:0.08},
+  {name:"revoke",calls:19,inputCost:0.008,outputCost:0.013,totalCost:0.021,avgCost:0.001125,tokens:10600,pct:0.11},
+  {name:"alter synonym",calls:12,inputCost:0.006,outputCost:0.013,totalCost:0.019,avgCost:0.001589,tokens:8600,pct:0.10},
+  {name:"drop view",calls:16,inputCost:0.007,outputCost:0.011,totalCost:0.018,avgCost:0.001098,tokens:9200,pct:0.09},
+  {name:"drop procedure",calls:18,inputCost:0.007,outputCost:0.011,totalCost:0.017,avgCost:0.000968,tokens:9200,pct:0.09},
+  {name:"drop index",calls:16,inputCost:0.006,outputCost:0.010,totalCost:0.016,avgCost:0.000998,tokens:8000,pct:0.08},
+  {name:"drop function",calls:4,inputCost:0.002,outputCost:0.003,totalCost:0.005,avgCost:0.001195,tokens:2600,pct:0.03},
+  {name:"drop user",calls:11,inputCost:0.005,outputCost:0.008,totalCost:0.012,avgCost:0.001125,tokens:6600,pct:0.07},
+  {name:"truncate table",calls:13,inputCost:0.005,outputCost:0.007,totalCost:0.012,avgCost:0.000956,tokens:6400,pct:0.07},
+  {name:"savepoint",calls:12,inputCost:0.004,outputCost:0.006,totalCost:0.010,avgCost:0.000855,tokens:5200,pct:0.05},
+  {name:"drop public",calls:3,inputCost:0.001,outputCost:0.002,totalCost:0.003,avgCost:0.001154,tokens:1400,pct:0.02},
+  {name:"drop synonym",calls:3,inputCost:0.001,outputCost:0.003,totalCost:0.004,avgCost:0.001258,tokens:1600,pct:0.02},
+  {name:"rename",calls:3,inputCost:0.002,outputCost:0.002,totalCost:0.003,avgCost:0.000857,tokens:2400,pct:0.02},
+  {name:"create role",calls:3,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.000653,tokens:1200,pct:0.01},
+  {name:"purge table",calls:2,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.001223,tokens:1200,pct:0.01},
+  {name:"purge recyclebin",calls:1,inputCost:0.001,outputCost:0.001,totalCost:0.002,avgCost:0.002135,tokens:1200,pct:0.01},
+]
 
 const sqlData = [
-  {cat:'DML',calls:1179,inputCost:2.345,outputCost:3.865,totalCost:6.21,avgCost:0.005267,tokens:3117847,pct:60.52},
-  {cat:'DDL',calls:1593,inputCost:1.348,outputCost:2.18,totalCost:3.528,avgCost:0.002215,tokens:1784364,pct:34.39},
-  {cat:'TCL',calls:282,inputCost:0.099,outputCost:0.152,totalCost:0.251,avgCost:0.000890,tokens:129129,pct:2.45},
-  {cat:'DCL',calls:150,inputCost:0.061,outputCost:0.105,totalCost:0.166,avgCost:0.001107,tokens:81739,pct:1.61},
-  {cat:'unknown',calls:18,inputCost:0.031,outputCost:0.074,totalCost:0.106,avgCost:0.005889,tokens:46385,pct:1.03},
+  {cat:'DML',calls:8607,inputCost:4.586,outputCost:7.173,totalCost:11.759,avgCost:0.001366,tokens:6020600,pct:61.95},
+  {cat:'DDL',calls:4143,inputCost:2.617,outputCost:4.204,totalCost:6.821,avgCost:0.001646,tokens:3457800,pct:35.94},
+  {cat:'DCL',calls:179,inputCost:0.099,outputCost:0.164,totalCost:0.263,avgCost:0.001469,tokens:131800,pct:1.39},
+  {cat:'TCL',calls:171,inputCost:0.082,outputCost:0.056,totalCost:0.137,avgCost:0.000799,tokens:93200,pct:0.72},
 ];
 
 const runData = [
-  {id:'649b40eb',started:'19:06',cost:2.449,tokens:1236598,avgCost:0.098,duration:45.22,passed:21,review:4,errors:0},
-  {id:'d73a9c5e',started:'19:55',cost:2.877,tokens:1453544,avgCost:0.115,duration:49.5,passed:19,review:6,errors:0},
-  {id:'b1943532',started:'20:50',cost:1.525,tokens:753404,avgCost:0.061,duration:28.39,passed:19,review:5,errors:1},
-  {id:'45bae05f',started:'21:23',cost:1.942,tokens:978424,avgCost:0.078,duration:37.72,passed:20,review:5,errors:0},
+  {id:'fdfeec24',started:'19:06',cost:3.029,tokens:1459143,avgCost:0.121,duration:33.0,passed:16,review:9,errors:0},
+  {id:'a537a411',started:'19:55',cost:3.561,tokens:1706050,avgCost:0.142,duration:52.0,passed:13,review:12,errors:0},
+  {id:'90689925',started:'20:50',cost:1.807,tokens:863543,avgCost:0.072,duration:24.0,passed:19,review:6,errors:0},
+  {id:'cee20226',started:'21:23',cost:6.548,tokens:3188222,avgCost:0.262,duration:108.0,passed:13,review:12,errors:0},
+  {id:'e1e68593',started:'22:31',cost:4.036,tokens:2486106,avgCost:0.161,duration:57.0,passed:23,review:2,errors:0},
 ];
 
 const retryData = [
-  {cat:'DCL',total:12,p1:1,p2:4,p3:3,escalated:2,avg:2.28},
-  {cat:'TCL',total:29,p1:9,p2:8,p3:1,escalated:7,avg:2.17},
-  {cat:'DML',total:92,p1:40,p2:17,p3:8,escalated:22,avg:2.16},
-  {cat:'DDL',total:80,p1:33,p2:21,p3:6,escalated:12,avg:2.14},
-  {cat:'unknown',total:3,p1:1,p2:1,p3:1,escalated:0,avg:1.33},
+  {cat:'DCL',total:12,p1:1,p2:2,p3:2,escalated:6,avg:2.41},
+  {cat:'DDL',total:80,p1:19,p2:19,p3:11,escalated:27,avg:2.39},
+  {cat:'DML',total:91,p1:21,p2:20,p3:16,escalated:30,avg:2.22},
+  {cat:'TCL',total:26,p1:4,p2:6,p3:3,escalated:11,avg:1.95},
 ];
 
 // ─── Chart instances ─────────────────────────────────────────────────────────
@@ -532,7 +536,7 @@ new Chart(document.getElementById('agentTokenDonut'),{
   type:'doughnut',
   data:{
     labels:['sdd_agent','migration_agent','validation_agent'],
-    datasets:[{data:[32.55,31.70,35.76],backgroundColor:AGENT_COLORS,borderWidth:2,hoverOffset:6}]
+    datasets:[{data:[28.12,29.81,42.07],backgroundColor:AGENT_COLORS,borderWidth:2,hoverOffset:6}]
   },
   options:{...chartDefaults,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}%`}}}}
 });
@@ -541,7 +545,7 @@ new Chart(document.getElementById('agentCostDonut'),{
   type:'doughnut',
   data:{
     labels:['sdd_agent','migration_agent','validation_agent'],
-    datasets:[{data:[38.81,34.96,26.23],backgroundColor:AGENT_COLORS,borderWidth:2,hoverOffset:6}]
+    datasets:[{data:[32.31,21.16,46.53],backgroundColor:AGENT_COLORS,borderWidth:2,hoverOffset:6}]
   },
   options:{...chartDefaults,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}%`}}}}
 });
@@ -551,8 +555,8 @@ new Chart(document.getElementById('agentTokenBar'),{
   data:{
     labels:['sdd_agent','migration_agent','validation_agent'],
     datasets:[
-      {label:'Input tokens',data:[1103638,1147256,1633203],backgroundColor:'#185FA5'},
-      {label:'Output tokens',data:[575645,488082,211640],backgroundColor:'#5ba3e0'},
+      {label:'Input tokens',data:[1878000,2612000,2894000],backgroundColor:'#185FA5'},
+      {label:'Output tokens',data:[850800,280800,1187800],backgroundColor:'#5ba3e0'},
     ]
   },
   options:{
@@ -689,52 +693,53 @@ new Chart(document.getElementById('runOutcomeChart'),{
 
 // ─── Object Retries ───────────────────────────────────────────────────────────
 const objRetryData = [
-  {name:'drop trigger',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'alter synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'savepoint',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'alter view',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'purge table',total:1,p1:0,p2:0,p3:0,escalated:0,avg:3},
-  {name:'create synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'purge recyclebin',total:1,p1:0,p2:0,p3:0,escalated:0,avg:3},
-  {name:'drop procedure',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'alter sequence',total:3,p1:0,p2:0,p3:0,escalated:3,avg:3.5},
+  {name:'drop view',total:3,p1:0,p2:0,p3:0,escalated:3,avg:3.13},
   {name:'drop public',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
-  {name:'alter sequence',total:3,p1:1,p2:0,p3:0,escalated:1,avg:2.67},
-  {name:'drop view',total:3,p1:1,p2:0,p3:0,escalated:1,avg:2.67},
-  {name:'alter session',total:4,p1:0,p2:0,p3:2,escalated:1,avg:2.57},
-  {name:'drop index',total:5,p1:2,p2:0,p3:0,escalated:2,avg:2.57},
-  {name:'revoke',total:5,p1:0,p2:2,p3:0,escalated:2,avg:2.5},
-  {name:'drop table',total:17,p1:4,p2:4,p3:0,escalated:6,avg:2.42},
-  {name:'alter table',total:16,p1:3,p2:4,p3:1,escalated:6,avg:2.39},
-  {name:'create procedure',total:6,p1:2,p2:1,p3:0,escalated:2,avg:2.38},
-  {name:'create function',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
-  {name:'merge',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
-  {name:'delete',total:21,p1:7,p2:4,p3:0,escalated:8,avg:2.33},
-  {name:'drop function',total:2,p1:0,p2:1,p3:0,escalated:1,avg:2.33},
-  {name:'update',total:18,p1:6,p2:4,p3:0,escalated:6,avg:2.26},
-  {name:'create sequence',total:20,p1:6,p2:5,p3:1,escalated:5,avg:2.2},
-  {name:'create table',total:35,p1:10,p2:9,p3:2,escalated:9,avg:2.2},
-  {name:'insert',total:32,p1:11,p2:7,p3:1,escalated:9,avg:2.2},
-  {name:'grant',total:12,p1:1,p2:4,p3:3,escalated:2,avg:2.18},
-  {name:'create user',total:4,p1:0,p2:1,p3:2,escalated:0,avg:2.17},
-  {name:'commit',total:29,p1:9,p2:8,p3:1,escalated:7,avg:2.14},
-  {name:'rollback',total:8,p1:4,p2:1,p3:0,escalated:1,avg:2.11},
-  {name:'select',total:81,p1:34,p2:14,p3:7,escalated:22,avg:2.04},
-  {name:'truncate table',total:3,p1:2,p2:0,p3:0,escalated:1,avg:2},
-  {name:'flashback table',total:3,p1:0,p2:2,p3:0,escalated:0,avg:2},
-  {name:'drop user',total:2,p1:0,p2:0,p3:2,escalated:0,avg:2},
-  {name:'create package',total:4,p1:0,p2:2,p3:1,escalated:0,avg:2},
-  {name:'execute',total:4,p1:0,p2:2,p3:1,escalated:1,avg:2},
-  {name:'drop sequence',total:9,p1:4,p2:2,p3:0,escalated:2,avg:2},
-  {name:'plsql block',total:23,p1:10,p2:5,p3:2,escalated:3,avg:1.88},
-  {name:'alter user',total:8,p1:1,p2:3,p3:3,escalated:0,avg:1.8},
-  {name:'create view',total:9,p1:5,p2:2,p3:0,escalated:1,avg:1.65},
-  {name:'create index',total:11,p1:7,p2:1,p3:1,escalated:1,avg:1.6},
-  {name:'create trigger',total:7,p1:4,p2:2,p3:0,escalated:1,avg:1.33},
-  {name:'unknown',total:3,p1:1,p2:1,p3:1,escalated:0,avg:1.33},
-  {name:'alter tablespace',total:2,p1:0,p2:2,p3:0,escalated:0,avg:1},
-  {name:'create role',total:1,p1:0,p2:1,p3:0,escalated:0,avg:1},
-  {name:'create tablespace',total:6,p1:4,p2:2,p3:0,escalated:0,avg:0.5},
-  {name:'rename',total:2,p1:2,p2:0,p3:0,escalated:0,avg:0},
+  {name:'alter synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'alter view',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'unknown',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'create package',total:4,p1:0,p2:0,p3:0,escalated:4,avg:3},
+  {name:'create role',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'create synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'savepoint',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'drop synonym',total:1,p1:0,p2:0,p3:0,escalated:1,avg:3},
+  {name:'merge',total:2,p1:0,p2:0,p3:0,escalated:2,avg:3},
+  {name:'alter user',total:8,p1:1,p2:0,p3:1,escalated:5,avg:2.92},
+  {name:'flashback table',total:3,p1:0,p2:0,p3:1,escalated:2,avg:2.92},
+  {name:'create procedure',total:5,p1:1,p2:0,p3:1,escalated:3,avg:2.85},
+  {name:'drop user',total:2,p1:0,p2:0,p3:1,escalated:0,avg:2.82},
+  {name:'create view',total:9,p1:4,p2:2,p3:0,escalated:3,avg:2.71},
+  {name:'alter tablespace',total:2,p1:0,p2:0,p3:1,escalated:1,avg:2.63},
+  {name:'grant',total:12,p1:1,p2:2,p3:2,escalated:6,avg:2.55},
+  {name:'alter table',total:16,p1:2,p2:2,p3:4,escalated:7,avg:2.54},
+  {name:'create sequence',total:20,p1:3,p2:5,p3:2,escalated:9,avg:2.52},
+  {name:'drop sequence',total:9,p1:0,p2:2,p3:2,escalated:4,avg:2.51},
+  {name:'create index',total:11,p1:4,p2:2,p3:1,escalated:4,avg:2.42},
+  {name:'execute',total:3,p1:1,p2:0,p3:1,escalated:1,avg:2.41},
+  {name:'create user',total:5,p1:1,p2:1,p3:1,escalated:1,avg:2.33},
+  {name:'plsql block',total:19,p1:5,p2:4,p3:2,escalated:7,avg:2.33},
+  {name:'create table',total:35,p1:8,p2:6,p3:5,escalated:15,avg:2.3},
+  {name:'insert',total:29,p1:5,p2:6,p3:3,escalated:14,avg:2.25},
+  {name:'drop function',total:2,p1:1,p2:0,p3:0,escalated:1,avg:2.25},
+  {name:'create function',total:2,p1:1,p2:0,p3:0,escalated:1,avg:2.2},
+  {name:'select',total:81,p1:20,p2:16,p3:16,escalated:25,avg:2.2},
+  {name:'update',total:18,p1:3,p2:2,p3:3,escalated:9,avg:2.15},
+  {name:'alter session',total:4,p1:0,p2:1,p3:2,escalated:0,avg:2.13},
+  {name:'drop table',total:17,p1:2,p2:5,p3:3,escalated:6,avg:2.04},
+  {name:'delete',total:20,p1:3,p2:4,p3:4,escalated:7,avg:2.03},
+  {name:'purge table',total:1,p1:0,p2:0,p3:1,escalated:0,avg:2},
+  {name:'purge recyclebin',total:1,p1:0,p2:0,p3:1,escalated:0,avg:2},
+  {name:'rollback',total:8,p1:2,p2:1,p3:1,escalated:4,avg:1.94},
+  {name:'commit',total:26,p1:4,p2:6,p3:3,escalated:11,avg:1.85},
+  {name:'drop index',total:5,p1:1,p2:1,p3:1,escalated:2,avg:1.81},
+  {name:'truncate table',total:4,p1:2,p2:1,p3:0,escalated:0,avg:1.62},
+  {name:'create tablespace',total:6,p1:1,p2:3,p3:1,escalated:1,avg:1.61},
+  {name:'revoke',total:5,p1:1,p2:2,p3:1,escalated:1,avg:1.21},
+  {name:'drop trigger',total:1,p1:0,p2:1,p3:0,escalated:0,avg:1},
+  {name:'drop procedure',total:1,p1:0,p2:1,p3:0,escalated:0,avg:1},
+  {name:'rename',total:2,p1:1,p2:1,p3:0,escalated:0,avg:0.75},
+  {name:'create trigger',total:6,p1:3,p2:2,p3:0,escalated:1,avg:0.69},
 ];
 
 let objRetryStackedInst=null, objRetryAvgInst=null, objEscalatedInst=null;
